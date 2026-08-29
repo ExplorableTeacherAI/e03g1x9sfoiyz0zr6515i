@@ -92,7 +92,10 @@ export const drawingGraphsIntroductionBlocks: ReactElement[] = [
                             <>
                                 Sign of <InlineFormula latex="\frac{dy}{dx}" />. Split the
                                 x-axis at those values and test each case: positive means
-                                climbing, negative means falling.
+                                climbing, negative means falling. The pattern of signs also
+                                tells you which turning points are maxima and which are
+                                minima — negative then positive is a minimum, positive then
+                                negative is a maximum.
                             </>,
                         ],
                     },
