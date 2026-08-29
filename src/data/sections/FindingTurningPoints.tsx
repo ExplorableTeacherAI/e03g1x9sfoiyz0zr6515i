@@ -3,7 +3,8 @@ import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
 import { EditableH2, EditableParagraph, InlineFormula } from "@/components/atoms";
 import { FormulaBlock } from "@/components/molecules";
-import { VisualOptionCards } from "@/components/organisms";
+import { StackedGradientExplorer } from "./visuals/StackedGradientExplorer";
+import { PracticeQuestions } from "./practice/PracticeQuestions";
 
 export const findingTurningPointsBlocks: ReactElement[] = [
     <StackLayout key="layout-turning-points-heading" maxWidth="xl">
@@ -53,39 +54,90 @@ export const findingTurningPointsBlocks: ReactElement[] = [
                 <InlineFormula latex="\frac{dy}{dx} = 0" /> at{" "}
                 <InlineFormula latex="x = 1" /> and <InlineFormula latex="x = -1" />.
                 Putting those back into the original equation gives the turning points{" "}
-                <InlineFormula latex="(1, 1)" /> and <InlineFormula latex="(-1, -1)" />. So
-                which one is the peak and which is the valley?
+                <InlineFormula latex="(1, 1)" /> and <InlineFormula latex="(-1, -1)" />.
+                The two graphs below share an x-axis: the curve on top, its gradient
+                underneath.
             </EditableParagraph>
         </Block>
     </StackLayout>,
 
     <StackLayout key="layout-turning-points-visual" maxWidth="xl">
-        <Block id="turning-points-visual" padding="sm">
-            <VisualOptionCards
-                blockId="turning-points-visual"
-                intro="Pick how your students will meet turning points."
-                cards={[
+        <Block id="turning-points-visual" padding="sm" hasVisualization>
+            <StackedGradientExplorer />
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-turning-points-reading" maxWidth="xl">
+        <Block id="turning-points-reading" padding="sm">
+            <EditableParagraph id="para-turning-points-reading" blockId="turning-points-reading">
+                Drag the line across. Wherever the lower graph touches zero, the curve above
+                has levelled off — and that happens at{" "}
+                <InlineFormula latex="x = -1" /> and <InlineFormula latex="x = 1" />, nowhere
+                else. Everywhere else the gradient sits clearly above or below the axis.
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-turning-points-practice" maxWidth="xl">
+        <Block id="turning-points-practice" padding="sm">
+            <PracticeQuestions
+                items={[
                     {
-                        id: "tangent-walk",
-                        title: "The curve with a tangent line students slide along it",
-                        looks: "The curve of the example function on axes, with a straight tangent line resting on it and the gradient value shown as a number.",
-                        manipulate: "Drag the tangent left and right along the curve.",
-                        reveals: "The tangent is exactly flat, and the number reads zero, only at the two turning points.",
-                        recommended: true,
+                        id: "turning-points-factors",
+                        prompt: (
+                            <>
+                                A different curve has{" "}
+                                <InlineFormula latex="\frac{dy}{dx} = \frac{4(x - 3)(x + 2)}{(1 + x^2)^2}" />
+                                . At which x values does it have turning points?
+                            </>
+                        ),
+                        choices: [
+                            {
+                                id: "three-and-minus-two",
+                                label: <InlineFormula latex="x = 3 \text{ and } x = -2" />,
+                                correct: true,
+                                feedback: "",
+                            },
+                            {
+                                id: "minus-three-and-two",
+                                label: <InlineFormula latex="x = -3 \text{ and } x = 2" />,
+                                feedback:
+                                    "Close, but the signs are flipped. A bracket like (x - 3) is zero when x is +3, not -3. Set each bracket to zero on paper and solve it.",
+                            },
+                            {
+                                id: "denominator-roots",
+                                label: <InlineFormula latex="x = 1 \text{ and } x = -1" />,
+                                feedback:
+                                    "Those came from the bottom of the fraction. A fraction equals zero only when its numerator is zero, so look at the top brackets.",
+                            },
+                            {
+                                id: "none",
+                                label: "It has no turning points",
+                                feedback:
+                                    "It does have them. Ask yourself which x values make the top of the fraction equal to zero.",
+                            },
+                        ],
+                        correctFeedback:
+                            "Yes. Each bracket on the top gives its own turning point, because the whole fraction is zero as soon as one factor on top is zero.",
                     },
                     {
-                        id: "stacked-gradient",
-                        title: "The curve and its gradient graph stacked one above the other",
-                        looks: "Two graphs sharing the same x-axis: the function on top, its derivative below, with a vertical line crossing both.",
-                        manipulate: "Move the vertical line across the pair.",
-                        reveals: "The lower graph crosses zero at exactly the x values where the upper curve levels off.",
-                    },
-                    {
-                        id: "factor-hunt",
-                        title: "A number entry where students test x values against the factored derivative",
-                        looks: "The factored derivative on screen with each factor shown separately, and a box to type an x value into.",
-                        manipulate: "Type in x values and watch each factor's value appear.",
-                        reveals: "The whole fraction is zero only when one of the top factors is zero.",
+                        id: "turning-points-cubic",
+                        prompt: (
+                            <>
+                                A curve has{" "}
+                                <InlineFormula latex="\frac{dy}{dx} = 3x^2 - 12" />. Type the{" "}
+                                <strong>positive</strong> x value of its turning point.
+                            </>
+                        ),
+                        answer: 2,
+                        tolerance: 0.01,
+                        correctFeedback:
+                            "Correct. Solving 3x^2 - 12 = 0 gives x^2 = 4, so the positive turning point is at x = 2 (and there is another at x = -2).",
+                        hints: [
+                            "Not yet. Start by setting the whole expression equal to zero, then get x^2 on its own.",
+                            "Divide both sides by 3 first. That leaves x^2 = 4 — now take the square root and keep the positive value.",
+                            "The answer is x = 2, because 3 times 4 minus 12 is zero. Check it by substituting back.",
+                        ],
                     },
                 ]}
             />

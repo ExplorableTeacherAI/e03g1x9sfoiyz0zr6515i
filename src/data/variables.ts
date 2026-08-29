@@ -74,8 +74,20 @@ export interface VariableDefinition {
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
     // ========================================
-    // ADD YOUR VARIABLES HERE
+    // Drawing graphs using differentiation
     // ========================================
+
+    /** x position of the vertical sweep line shared by the curve and its gradient graph */
+    turningPointSweepX: {
+        defaultValue: 0,
+        type: 'number',
+        label: 'x',
+        description: 'Position of the vertical line crossing the curve and its gradient graph',
+        min: -4,
+        max: 4,
+        step: 0.05,
+        color: '#6366f1',
+    },
 
     // Uncomment and modify these examples for your lesson:
 
