@@ -2,6 +2,7 @@ import { type ReactElement } from "react";
 import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
 import { EditableH2, EditableParagraph, InlineFormula } from "@/components/atoms";
+import { StepByStepSketchBuilder } from "./visuals/StepByStepSketchBuilder";
 
 export const puttingTheSketchTogetherBlocks: ReactElement[] = [
     <StackLayout key="layout-conclusion-heading" maxWidth="xl">
@@ -22,6 +23,20 @@ export const puttingTheSketchTogetherBlocks: ReactElement[] = [
                 where its gradient is zero, and where its bending changes direction. The
                 curve is simply the one shape that fits all of those facts at once.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-conclusion-walkthrough-lead" maxWidth="xl">
+        <Block id="conclusion-walkthrough-lead" padding="sm">
+            <EditableParagraph id="para-conclusion-walkthrough-lead" blockId="conclusion-walkthrough-lead">
+                Step through the whole routine below and watch the sketch assemble itself.
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-conclusion-walkthrough" maxWidth="2xl">
+        <Block id="conclusion-walkthrough" padding="sm" hasVisualization>
+            <StepByStepSketchBuilder />
         </Block>
     </StackLayout>,
 

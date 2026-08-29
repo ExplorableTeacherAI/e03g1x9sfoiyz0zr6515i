@@ -77,6 +77,18 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
     // Drawing graphs using differentiation
     // ========================================
 
+    /** Which of the six sketching steps is currently displayed */
+    sketchStep: {
+        defaultValue: 1,
+        type: 'number',
+        label: 'Step',
+        description: 'Current step of the step-by-step sketch builder',
+        min: 1,
+        max: 6,
+        step: 1,
+        color: '#6366f1',
+    },
+
     /** x position of the marker moving through both concavity panels */
     bendingMarkerX: {
         defaultValue: 0,
