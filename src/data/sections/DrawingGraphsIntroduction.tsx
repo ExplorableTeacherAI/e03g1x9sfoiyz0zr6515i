@@ -1,7 +1,7 @@
 import { type ReactElement } from "react";
 import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
-import { EditableH1, EditableParagraph, InlineFormula } from "@/components/atoms";
+import { EditableH1, EditableParagraph, InlineFormula, Table } from "@/components/atoms";
 
 export const drawingGraphsIntroductionBlocks: ReactElement[] = [
     <StackLayout key="layout-introduction-title" maxWidth="xl">
@@ -35,6 +35,89 @@ export const drawingGraphsIntroductionBlocks: ReactElement[] = [
                 that part will feel familiar. The new skill is reading what those
                 derivatives say about the shape.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+    <StackLayout key="layout-introduction-routine-lead" maxWidth="xl">
+        <Block id="introduction-routine-lead" padding="sm">
+            <EditableParagraph id="para-introduction-routine-lead" blockId="introduction-routine-lead">
+                Here is the whole routine in one place. Every section that follows works on
+                one of these steps.
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-introduction-routine" maxWidth="xl">
+        <Block id="introduction-routine" padding="sm">
+            <Table
+                columns={[
+                    { header: "Step", align: "center", width: 70 },
+                    { header: "What you do" },
+                ]}
+                rows={[
+                    {
+                        cells: [
+                            "1",
+                            <>
+                                Differentiate. Find{" "}
+                                <InlineFormula latex="\frac{dy}{dx}" /> and{" "}
+                                <InlineFormula latex="\frac{d^2y}{dx^2}" />, and write both
+                                in factorised form.
+                            </>,
+                        ],
+                    },
+                    {
+                        cells: [
+                            "2",
+                            <>
+                                Turning points. Solve{" "}
+                                <InlineFormula latex="\frac{dy}{dx} = 0" /> by setting the
+                                numerator to zero, then find each matching y value.
+                            </>,
+                        ],
+                    },
+                    {
+                        cells: [
+                            "3",
+                            <>
+                                Frame the curve. Find y at{" "}
+                                <InlineFormula latex="x = 0" />, the limits as{" "}
+                                <InlineFormula latex="x \to \pm\infty" />, and the vertical
+                                asymptotes where the denominator is zero.
+                            </>,
+                        ],
+                    },
+                    {
+                        cells: [
+                            "4",
+                            <>
+                                Sign of <InlineFormula latex="\frac{dy}{dx}" />. Split the
+                                x-axis at those values and test each case: positive means
+                                climbing, negative means falling.
+                            </>,
+                        ],
+                    },
+                    {
+                        cells: [
+                            "5",
+                            <>
+                                Sign of <InlineFormula latex="\frac{d^2y}{dx^2}" />. Solve it
+                                equal to zero, test each range, and look for a sign change —
+                                that marks a point of inflection.
+                            </>,
+                        ],
+                    },
+                    {
+                        cells: [
+                            "6",
+                            "Sketch. Put the points, asymptotes, slopes and bends together into one curve.",
+                        ],
+                        highlight: true,
+                        highlightColor: "#6366f1",
+                    },
+                ]}
+                color="#6366f1"
+                caption="The routine for sketching a curve from its derivatives"
+            />
         </Block>
     </StackLayout>,
 ];
