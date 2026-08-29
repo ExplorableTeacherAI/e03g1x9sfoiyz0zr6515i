@@ -77,6 +77,18 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
     // Drawing graphs using differentiation
     // ========================================
 
+    /** x position of the marker moving through both concavity panels */
+    bendingMarkerX: {
+        defaultValue: 0,
+        type: 'number',
+        label: 'x',
+        description: 'Marker position used to compare the sign of the second derivative on two curves',
+        min: -2,
+        max: 2,
+        step: 0.02,
+        color: '#f59e0b',
+    },
+
     /** Whether the dashed vertical-asymptote lines are shown on both comparison graphs */
     framingShowDenominatorZeros: {
         defaultValue: false,
