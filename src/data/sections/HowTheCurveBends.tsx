@@ -4,6 +4,7 @@ import { StackLayout } from "@/components/layouts";
 import { EditableH2, EditableParagraph, InlineFormula } from "@/components/atoms";
 import { FormulaBlock } from "@/components/molecules";
 import { ConcavityComparison } from "./visuals/ConcavityComparison";
+import { SecondDerivativeSignTable } from "./visuals/SecondDerivativeSignTable";
 import { PracticeQuestions } from "./practice/PracticeQuestions";
 
 export const howTheCurveBendsBlocks: ReactElement[] = [
@@ -56,6 +57,21 @@ export const howTheCurveBendsBlocks: ReactElement[] = [
                 positive on both sides, so its strip never changes colour. That point is a
                 minimum, not an inflection.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-bending-sign-table-lead" maxWidth="xl">
+        <Block id="bending-sign-table-lead" padding="sm">
+            <EditableParagraph id="para-bending-sign-table-lead" blockId="bending-sign-table-lead">
+                Now build the sign table for{" "}
+                <InlineFormula latex="\frac{d^2y}{dx^2}" />, one case at a time.
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-bending-sign-table" maxWidth="2xl">
+        <Block id="bending-sign-table" padding="sm" hasVisualization>
+            <SecondDerivativeSignTable />
         </Block>
     </StackLayout>,
 
