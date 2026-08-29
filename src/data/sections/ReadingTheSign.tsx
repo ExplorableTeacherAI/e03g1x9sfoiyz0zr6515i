@@ -21,8 +21,9 @@ export const readingTheSignBlocks: ReactElement[] = [
                 <InlineFormula latex="x = -1" /> and <InlineFormula latex="x = 1" /> does
                 not tell you which is a maximum. For that you must test the sign of{" "}
                 <InlineFormula latex="\frac{dy}{dx}" /> on both sides. Cut the x-axis at
-                every turning point and every asymptote, giving three ranges:{" "}
-                <InlineFormula latex="x < -1" />, <InlineFormula latex="-1 < x < 1" /> and{" "}
+                every turning point and every asymptote, giving five cases to check:{" "}
+                <InlineFormula latex="x < -1" />, <InlineFormula latex="x = -1" />,{" "}
+                <InlineFormula latex="-1 < x < 1" />, <InlineFormula latex="x = 1" /> and{" "}
                 <InlineFormula latex="x > 1" />.
             </EditableParagraph>
         </Block>
@@ -33,8 +34,8 @@ export const readingTheSignBlocks: ReactElement[] = [
             <EditableParagraph id="para-sign-ranges-method" blockId="sign-ranges-method">
                 In <InlineFormula latex="\frac{dy}{dx} = \frac{-2(x - 1)(x + 1)}{(1 + x^2)^2}" />{" "}
                 the bottom is a square, so it is always positive. Only the top decides the
-                sign. Choose the sign of each bracket in every range below; get all three
-                right and the curve draws itself.
+                sign. Choose the sign of each bracket in every case below — the boundary
+                rows take the value zero — and the curve draws itself as you go.
             </EditableParagraph>
         </Block>
     </StackLayout>,

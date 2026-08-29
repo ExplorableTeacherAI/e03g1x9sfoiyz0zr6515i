@@ -1,27 +1,39 @@
 import { useState } from "react";
 import { Button } from "@/components/atoms";
 
-type Sign = "+" | "-";
+type Sign = "+" | "-" | "0";
 
-interface RangeSpec {
+interface RowSpec {
     id: string;
     label: string;
+    /** Interval rows are tested with a sample value; point rows sit exactly on the value */
+    kind: "interval" | "point";
     testValue: number;
-    domain: [number, number];
+    /** Only interval rows draw a piece of curve */
+    domain?: [number, number];
 }
 
-const RANGES: RangeSpec[] = [
-    { id: "left", label: "x < -1", testValue: -2, domain: [-4, -1] },
-    { id: "middle", label: "-1 < x < 1", testValue: 0, domain: [-1, 1] },
-    { id: "right", label: "x > 1", testValue: 2, domain: [1, 4] },
+const ROWS: RowSpec[] = [
+    { id: "left", label: "x < -1", kind: "interval", testValue: -2, domain: [-4, -1] },
+    { id: "at-minus-one", label: "x = -1", kind: "point", testValue: -1 },
+    { id: "middle", label: "-1 < x < 1", kind: "interval", testValue: 0, domain: [-1, 1] },
+    { id: "at-one", label: "x = 1", kind: "point", testValue: 1 },
+    { id: "right", label: "x > 1", kind: "interval", testValue: 2, domain: [1, 4] },
 ];
 
-const signOf = (value: number): Sign => (value > 0 ? "+" : "-");
+const signOf = (value: number): Sign =>
+    value === 0 ? "0" : value > 0 ? "+" : "-";
+
 const curve = (x: number) => (2 * x) / (1 + x * x);
 
-/** dy/dx sign that follows from the two chosen bracket signs (leading -2, positive bottom) */
-const derivedSign = (plusOne: Sign, minusOne: Sign): Sign =>
-    plusOne === minusOne ? "-" : "+";
+/** dy/dx sign that follows from the two bracket signs (leading -2, always-positive bottom) */
+const derivedSign = (plusOne: Sign, minusOne: Sign): Sign => {
+    if (plusOne === "0" || minusOne === "0") return "0";
+    return plusOne === minusOne ? "-" : "+";
+};
+
+const describeSign = (sign: Sign) =>
+    sign === "0" ? "flat — a turning point" : sign === "+" ? "climbing" : "falling";
 
 // ── SVG geometry ──────────────────────────────────────────────────────────────
 const VIEW_WIDTH = 620;
@@ -55,7 +67,7 @@ const SignButtons = ({
     onChange: (sign: Sign) => void;
 }) => (
     <div className="flex gap-1">
-        {(["+", "-"] as Sign[]).map((sign) => (
+        {(["+", "-", "0"] as Sign[]).map((sign) => (
             <Button
                 key={sign}
                 size="sm"
@@ -75,25 +87,27 @@ export const SignTableBuilder = () => {
     >({});
 
     const setChoice = (
-        rangeId: string,
+        rowId: string,
         bracket: "plusOne" | "minusOne",
         sign: Sign,
     ) =>
         setChoices((previous) => ({
             ...previous,
-            [rangeId]: { ...previous[rangeId], [bracket]: sign },
+            [rowId]: { ...previous[rowId], [bracket]: sign },
         }));
 
-    const isRangeCorrect = (range: RangeSpec) => {
-        const choice = choices[range.id];
+    const isRowCorrect = (row: RowSpec) => {
+        const choice = choices[row.id];
         if (!choice?.plusOne || !choice.minusOne) return false;
         return (
-            choice.plusOne === signOf(range.testValue + 1) &&
-            choice.minusOne === signOf(range.testValue - 1)
+            choice.plusOne === signOf(row.testValue + 1) &&
+            choice.minusOne === signOf(row.testValue - 1)
         );
     };
 
-    const solvedCount = RANGES.filter(isRangeCorrect).length;
+    const solvedCount = ROWS.filter(isRowCorrect).length;
+    const intervalRows = ROWS.filter((row) => row.domain);
+    const pointRows = ROWS.filter((row) => row.kind === "point");
 
     return (
         <div className="space-y-4">
@@ -144,32 +158,50 @@ export const SignTableBuilder = () => {
                     </text>
                 ))}
 
-                {RANGES.map((range) => (
-                    <g key={`piece-${range.id}`}>
+                {intervalRows.map((row) => (
+                    <g key={`piece-${row.id}`}>
                         <path
-                            d={pathFor(range.domain)}
+                            d={pathFor(row.domain as [number, number])}
                             fill="none"
-                            stroke={isRangeCorrect(range) ? "#6366f1" : "#e2e8f0"}
-                            strokeWidth={isRangeCorrect(range) ? 3 : 2}
-                            strokeDasharray={isRangeCorrect(range) ? undefined : "6 5"}
+                            stroke={isRowCorrect(row) ? "#6366f1" : "#e2e8f0"}
+                            strokeWidth={isRowCorrect(row) ? 3 : 2}
+                            strokeDasharray={isRowCorrect(row) ? undefined : "6 5"}
                         />
                         <text
-                            x={mapX((range.domain[0] + range.domain[1]) / 2)}
+                            x={mapX(
+                                ((row.domain as [number, number])[0] +
+                                    (row.domain as [number, number])[1]) /
+                                    2,
+                            )}
                             y={PAD_Y - 16}
                             textAnchor="middle"
                             fontSize="12"
-                            fill={isRangeCorrect(range) ? "#4338ca" : "#94a3b8"}
+                            fill={isRowCorrect(row) ? "#4338ca" : "#94a3b8"}
                         >
-                            {range.label}
+                            {row.label}
                         </text>
                     </g>
                 ))}
 
-                {solvedCount === RANGES.length && (
-                    <>
-                        <circle cx={mapX(1)} cy={mapY(1)} r={5} fill="#dc2626" />
-                        <circle cx={mapX(-1)} cy={mapY(-1)} r={5} fill="#dc2626" />
-                    </>
+                {pointRows.map((row) =>
+                    isRowCorrect(row) ? (
+                        <g key={`turning-${row.id}`}>
+                            <line
+                                x1={mapX(row.testValue) - 22}
+                                y1={mapY(curve(row.testValue))}
+                                x2={mapX(row.testValue) + 22}
+                                y2={mapY(curve(row.testValue))}
+                                stroke="#dc2626"
+                                strokeWidth={2.5}
+                            />
+                            <circle
+                                cx={mapX(row.testValue)}
+                                cy={mapY(curve(row.testValue))}
+                                r={5}
+                                fill="#dc2626"
+                            />
+                        </g>
+                    ) : null,
                 )}
             </svg>
 
@@ -178,7 +210,7 @@ export const SignTableBuilder = () => {
                     <thead>
                         <tr className="bg-slate-100 text-slate-700">
                             <th className="border border-slate-200 px-3 py-2 text-left">
-                                Range
+                                Case
                             </th>
                             <th className="border border-slate-200 px-3 py-2">
                                 Sign of (x + 1)
@@ -192,23 +224,30 @@ export const SignTableBuilder = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {RANGES.map((range) => {
-                            const choice = choices[range.id] ?? {};
+                        {ROWS.map((row) => {
+                            const choice = choices[row.id] ?? {};
                             const complete = choice.plusOne && choice.minusOne;
-                            const correct = isRangeCorrect(range);
+                            const correct = isRowCorrect(row);
                             return (
-                                <tr key={range.id} className="bg-white">
+                                <tr
+                                    key={row.id}
+                                    className={
+                                        row.kind === "point" ? "bg-rose-50" : "bg-white"
+                                    }
+                                >
                                     <td className="border border-slate-200 px-3 py-2 font-medium text-slate-700">
-                                        {range.label}
+                                        {row.label}
                                         <span className="ml-2 text-xs text-slate-400">
-                                            try x = {range.testValue}
+                                            {row.kind === "point"
+                                                ? "substitute exactly"
+                                                : `try x = ${row.testValue}`}
                                         </span>
                                     </td>
                                     <td className="border border-slate-200 px-3 py-2">
                                         <SignButtons
                                             value={choice.plusOne}
                                             onChange={(sign) =>
-                                                setChoice(range.id, "plusOne", sign)
+                                                setChoice(row.id, "plusOne", sign)
                                             }
                                         />
                                     </td>
@@ -216,7 +255,7 @@ export const SignTableBuilder = () => {
                                         <SignButtons
                                             value={choice.minusOne}
                                             onChange={(sign) =>
-                                                setChoice(range.id, "minusOne", sign)
+                                                setChoice(row.id, "minusOne", sign)
                                             }
                                         />
                                     </td>
@@ -232,16 +271,16 @@ export const SignTableBuilder = () => {
                                                     choice.minusOne as Sign,
                                                 )}{" "}
                                                 —{" "}
-                                                {derivedSign(
-                                                    choice.plusOne as Sign,
-                                                    choice.minusOne as Sign,
-                                                ) === "+"
-                                                    ? "climbing"
-                                                    : "falling"}
+                                                {describeSign(
+                                                    derivedSign(
+                                                        choice.plusOne as Sign,
+                                                        choice.minusOne as Sign,
+                                                    ),
+                                                )}
                                             </span>
                                         ) : (
                                             <span className="text-amber-700">
-                                                substitute x = {range.testValue} into each
+                                                substitute x = {row.testValue} into each
                                                 bracket
                                             </span>
                                         )}
@@ -254,10 +293,10 @@ export const SignTableBuilder = () => {
             </div>
 
             <div className="text-sm text-slate-600">
-                {solvedCount} of {RANGES.length} ranges correct
-                {solvedCount === RANGES.length
+                {solvedCount} of {ROWS.length} cases correct
+                {solvedCount === ROWS.length
                     ? " — the whole shape is now fixed, turning points included."
-                    : " — a range only draws once its signs are right."}
+                    : " — each case only appears on the graph once its signs are right."}
             </div>
         </div>
     );
