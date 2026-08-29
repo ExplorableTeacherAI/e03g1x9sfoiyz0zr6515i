@@ -29,8 +29,9 @@ export const framingTheCurveBlocks: ReactElement[] = [
         <Block id="framing-limits" padding="sm">
             <EditableParagraph id="para-framing-limits" blockId="framing-limits">
                 Next ask what happens far out. Divide top and bottom by{" "}
-                <InlineFormula latex="x^2" />: the top shrinks towards zero while the
-                bottom heads to 1.
+                <InlineFormula latex="x^2" />: the top shrinks towards zero while the bottom
+                heads to 1. That limit, <InlineFormula latex="y = 0" />, is the horizontal
+                asymptote drawn as a green dotted line on both graphs below.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -61,10 +62,9 @@ export const framingTheCurveBlocks: ReactElement[] = [
     <StackLayout key="layout-framing-comparison-note" maxWidth="xl">
         <Block id="framing-comparison-note" padding="sm">
             <EditableParagraph id="para-framing-comparison-note" blockId="framing-comparison-note">
-                <InlineFormula latex="1 + x^2" /> is never zero, so the left curve runs in one
-                unbroken piece. <InlineFormula latex="1 - x^2" /> vanishes at{" "}
-                <InlineFormula latex="x = -1" /> and <InlineFormula latex="x = 1" />, so the
-                right one is torn into three.
+                <InlineFormula latex="1 + x^2" /> is never zero, so the left curve is
+                unbroken. <InlineFormula latex="1 - x^2" /> vanishes at{" "}
+                <InlineFormula latex="x = \pm 1" />, tearing the right one into three.
             </EditableParagraph>
         </Block>
     </StackLayout>,

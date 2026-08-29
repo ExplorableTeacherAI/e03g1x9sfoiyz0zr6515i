@@ -8,8 +8,19 @@ const brokenCurve = (x: number) => (2 * x) / (1 - x * x);
 const CURVE_COLOR = "#6366f1";
 const BROKEN_COLOR = "#0ea5e9";
 const ASYMPTOTE_COLOR = "#dc2626";
+const HORIZONTAL_COLOR = "#059669";
 
 const Y_LIMIT = 5;
+
+/** The horizontal asymptote y = 0, the value both limits settle on */
+const horizontalAsymptote: PlotItem = {
+    type: "segment",
+    point1: [-4, 0],
+    point2: [4, 0],
+    color: HORIZONTAL_COLOR,
+    style: "dashed",
+    weight: 2.5,
+};
 
 const asymptoteLine = (x: number): PlotItem => ({
     type: "segment",
@@ -36,6 +47,7 @@ export const DenominatorComparison = () => {
                         viewBox={{ x: [-4, 4], y: [-Y_LIMIT, Y_LIMIT] }}
                         subdivisions={false}
                         plots={[
+                            horizontalAsymptote,
                             {
                                 type: "function",
                                 fn: safeCurve,
@@ -46,8 +58,11 @@ export const DenominatorComparison = () => {
                     />
                     <div className="mt-1 text-sm text-slate-500">
                         {showZeros
-                            ? "1 + x² = 0 has no real solution — no dashed lines to draw."
-                            : "Switch the dashed lines on to compare."}
+                            ? "1 + x² = 0 has no real solution — no red line to draw."
+                            : "Switch the red lines on to compare."}
+                    </div>
+                    <div className="text-sm" style={{ color: HORIZONTAL_COLOR }}>
+                        Green dotted line: y = 0, the value the limit gave as x → ±∞.
                     </div>
                 </div>
 
@@ -60,6 +75,7 @@ export const DenominatorComparison = () => {
                         viewBox={{ x: [-4, 4], y: [-Y_LIMIT, Y_LIMIT] }}
                         subdivisions={false}
                         plots={[
+                            horizontalAsymptote,
                             {
                                 type: "function",
                                 fn: brokenCurve,
@@ -89,7 +105,10 @@ export const DenominatorComparison = () => {
                     <div className="mt-1 text-sm text-slate-500">
                         {showZeros
                             ? "1 − x² = 0 at x = −1 and x = 1 — the curve breaks at both."
-                            : "Switch the dashed lines on to compare."}
+                            : "Switch the red lines on to compare."}
+                    </div>
+                    <div className="text-sm" style={{ color: HORIZONTAL_COLOR }}>
+                        Green dotted line: y = 0 here too — both limits at ±∞ come to zero.
                     </div>
                 </div>
             </div>
@@ -106,7 +125,7 @@ export const DenominatorComparison = () => {
                     htmlFor="framing-denominator-switch"
                     className="cursor-pointer text-slate-700"
                 >
-                    Show where the denominator is zero
+                    Show the vertical asymptotes (where the denominator is zero)
                 </Label>
             </div>
         </div>
