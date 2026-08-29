@@ -77,6 +77,14 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
     // Drawing graphs using differentiation
     // ========================================
 
+    /** Whether the dashed vertical-asymptote lines are shown on both comparison graphs */
+    framingShowDenominatorZeros: {
+        defaultValue: false,
+        type: 'boolean',
+        label: 'Show where the denominator is zero',
+        description: 'Toggles the dashed vertical asymptote lines on the two comparison graphs',
+    },
+
     /** x position of the vertical sweep line shared by the curve and its gradient graph */
     turningPointSweepX: {
         defaultValue: 0,

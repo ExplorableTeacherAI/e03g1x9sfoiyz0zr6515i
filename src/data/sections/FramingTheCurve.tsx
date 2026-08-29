@@ -3,7 +3,8 @@ import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
 import { EditableH2, EditableParagraph, InlineFormula } from "@/components/atoms";
 import { FormulaBlock } from "@/components/molecules";
-import { VisualOptionCards } from "@/components/organisms";
+import { DenominatorComparison } from "./visuals/DenominatorComparison";
+import { PracticeQuestions } from "./practice/PracticeQuestions";
 
 export const framingTheCurveBlocks: ReactElement[] = [
     <StackLayout key="layout-framing-heading" maxWidth="xl">
@@ -17,10 +18,9 @@ export const framingTheCurveBlocks: ReactElement[] = [
     <StackLayout key="layout-framing-intercept" maxWidth="xl">
         <Block id="framing-intercept" padding="sm">
             <EditableParagraph id="para-framing-intercept" blockId="framing-intercept">
-                Before drawing anything, pin down the edges of the picture. Start with{" "}
-                <InlineFormula latex="x = 0" />: the example gives{" "}
+                Before drawing anything, pin down the edges of the picture. At{" "}
+                <InlineFormula latex="x = 0" /> the example gives{" "}
                 <InlineFormula latex="y = 0" />, so the curve passes through the origin.
-                That is one point you know for certain.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -28,7 +28,7 @@ export const framingTheCurveBlocks: ReactElement[] = [
     <StackLayout key="layout-framing-limits" maxWidth="xl">
         <Block id="framing-limits" padding="sm">
             <EditableParagraph id="para-framing-limits" blockId="framing-limits">
-                Next ask what happens far out. Divide the top and bottom by{" "}
+                Next ask what happens far out. Divide top and bottom by{" "}
                 <InlineFormula latex="x^2" />: the top shrinks towards zero while the
                 bottom heads to 1.
             </EditableParagraph>
@@ -44,45 +44,126 @@ export const framingTheCurveBlocks: ReactElement[] = [
     <StackLayout key="layout-framing-asymptotes" maxWidth="xl">
         <Block id="framing-asymptotes" padding="sm">
             <EditableParagraph id="para-framing-asymptotes" blockId="framing-asymptotes">
-                Now the step that gets skipped most often: set the denominator to zero. A
-                vertical asymptote sits wherever the bottom of the fraction vanishes, and
-                missing one ruins the whole sketch. Here <InlineFormula latex="1 + x^2 = 0" />{" "}
-                has no real solution, so this curve has none. Change the function to{" "}
-                <InlineFormula latex="y = \frac{2x}{1 - x^2}" /> and the bottom vanishes at{" "}
-                <InlineFormula latex="x = 1" /> and <InlineFormula latex="x = -1" /> — two
-                lines the curve can never cross.
+                Now the step that gets skipped most often: set the denominator to zero.
+                Wherever the bottom vanishes, the curve has a vertical asymptote — a line it
+                races towards but never crosses. Compare the two functions below and switch
+                the dashed lines on.
             </EditableParagraph>
         </Block>
     </StackLayout>,
 
-    <StackLayout key="layout-framing-visual" maxWidth="xl">
-        <Block id="framing-visual" padding="sm">
-            <VisualOptionCards
-                blockId="framing-visual"
-                intro="Pick how your students will see what frames a curve."
-                cards={[
+    <StackLayout key="layout-framing-visual" maxWidth="2xl">
+        <Block id="framing-visual" padding="sm" hasVisualization>
+            <DenominatorComparison />
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-framing-comparison-note" maxWidth="xl">
+        <Block id="framing-comparison-note" padding="sm">
+            <EditableParagraph id="para-framing-comparison-note" blockId="framing-comparison-note">
+                <InlineFormula latex="1 + x^2" /> is never zero, so the left curve runs in one
+                unbroken piece. <InlineFormula latex="1 - x^2" /> vanishes at{" "}
+                <InlineFormula latex="x = -1" /> and <InlineFormula latex="x = 1" />, so the
+                right one is torn into three.
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-framing-practice" maxWidth="xl">
+        <Block id="framing-practice" padding="sm">
+            <PracticeQuestions
+                items={[
                     {
-                        id: "denominator-switch",
-                        title: "Two functions side by side: one with a zero denominator, one without",
-                        looks: "Two graphs shown together, one for each function, with dashed vertical lines drawn wherever the denominator hits zero.",
-                        manipulate: "Switch between the two functions and watch the dashed lines appear and disappear.",
-                        reveals: "A zero denominator creates a vertical wall the curve races towards but never touches.",
-                        targetsMisconception: "Students ignore where the denominator is zero, so they miss asymptotes",
-                        recommended: true,
+                        id: "framing-asymptote-location",
+                        prompt: (
+                            <>
+                                Where is the vertical asymptote of{" "}
+                                <InlineFormula latex="y = \frac{x + 2}{x - 3}" />?
+                            </>
+                        ),
+                        choices: [
+                            {
+                                id: "x-equals-three",
+                                label: <InlineFormula latex="x = 3" />,
+                                correct: true,
+                                feedback: "",
+                            },
+                            {
+                                id: "x-equals-minus-two",
+                                label: <InlineFormula latex="x = -2" />,
+                                feedback:
+                                    "That is where the top is zero, which gives an x-intercept — the curve passes straight through it. The asymptote comes from the bottom of the fraction.",
+                            },
+                            {
+                                id: "y-equals-one",
+                                label: <InlineFormula latex="y = 1" />,
+                                feedback:
+                                    "That is the horizontal asymptote, found by letting x run to infinity. A vertical asymptote comes from the denominator instead.",
+                            },
+                            {
+                                id: "no-asymptote",
+                                label: "There is no vertical asymptote",
+                                feedback:
+                                    "Try setting x - 3 equal to zero. Switch the dashed lines on above and look at what a zero denominator does to a curve.",
+                            },
+                        ],
+                        correctFeedback:
+                            "Yes. At x = 3 the bottom is zero, so the value of y is undefined and the curve breaks there instead of crossing.",
                     },
                     {
-                        id: "zoom-out",
-                        title: "A zoom control that pulls the view out to very large x values",
-                        looks: "The curve on axes with a zoom slider, and the current y value displayed as a number.",
-                        manipulate: "Zoom out and watch the number shrink towards zero.",
-                        reveals: "Far from the origin the curve flattens onto the x-axis instead of running away.",
+                        id: "framing-quadratic-denominator",
+                        prompt: (
+                            <>
+                                <InlineFormula latex="y = \frac{5}{x^2 - 16}" /> breaks at two x
+                                values. Type the <strong>positive</strong> one.
+                            </>
+                        ),
+                        answer: 4,
+                        tolerance: 0.01,
+                        correctFeedback:
+                            "Correct. x² - 16 = 0 gives x = 4 and x = -4, so this curve has two vertical asymptotes rather than one.",
+                        hints: [
+                            "Not yet. The break happens where the bottom is zero, so solve x² - 16 = 0.",
+                            "Move the 16 across: x² = 16. Now take the square root and keep the positive value.",
+                            "The answer is x = 4, since 4² - 16 = 0. The other break is at x = -4.",
+                        ],
                     },
                     {
-                        id: "value-table",
-                        title: "A table of y values as x is pushed further and further out",
-                        looks: "A table of x and y pairs for growing x, with the curve drawn beside it.",
-                        manipulate: "Add larger and larger x values to the table.",
-                        reveals: "The y values close in on a single number, which is the horizontal asymptote.",
+                        id: "framing-limit-at-infinity",
+                        prompt: (
+                            <>
+                                What does <InlineFormula latex="y = \frac{3x^2 + 1}{x^2 + 2}" />{" "}
+                                approach as <InlineFormula latex="x \to +\infty" />?
+                            </>
+                        ),
+                        choices: [
+                            {
+                                id: "three",
+                                label: <InlineFormula latex="y \to 3" />,
+                                correct: true,
+                                feedback: "",
+                            },
+                            {
+                                id: "zero",
+                                label: <InlineFormula latex="y \to 0" />,
+                                feedback:
+                                    "That happens when the bottom grows faster than the top. Here both grow like x², so divide every term by x² and see what survives.",
+                            },
+                            {
+                                id: "infinity",
+                                label: <InlineFormula latex="y \to \infty" />,
+                                feedback:
+                                    "The bottom is growing just as fast as the top, so the fraction settles rather than runs away. Divide top and bottom by x² and try again.",
+                            },
+                            {
+                                id: "half",
+                                label: <InlineFormula latex="y \to \tfrac{1}{2}" />,
+                                feedback:
+                                    "That is the value at x = 0, not the value far out. Divide top and bottom by x² and let the small terms fall away.",
+                            },
+                        ],
+                        correctFeedback:
+                            "Yes. Dividing by x² gives (3 + 1/x²) over (1 + 2/x²); the small terms vanish and only 3 over 1 is left, so y = 3 is the horizontal asymptote.",
                     },
                 ]}
             />
